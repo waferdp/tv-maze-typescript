@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Row, Col, Spinner, Alert } from "react-bootstrap";
-import { useParams, Link } from "react-router-dom";
+import { Row, Col, Spinner, Alert, Card, ListGroup, ListGroupItem, Button } from "react-bootstrap";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Show } from "../types";
 import { stripHTML } from "../utils/helpers";
 import noImage from "../no-image.jpeg";
@@ -27,6 +27,11 @@ const Detail: React.FC = () => {
     };
     fetchShow();
   }, [id]);
+
+  const navigate = useNavigate();
+	const goBack = () => {
+		navigate(-1);
+	}
 
   const renderDetails = () => {
     if (isLoading) {
@@ -58,47 +63,52 @@ const Detail: React.FC = () => {
         <h1 className="my-4">{show.name}</h1>
         <Row>
           <Col md={3} xs={12} className="d-flex pb-2">
-            <img
-              src={show.image ? show.image.medium : noImage}
-              alt={show.name}
-              className="mx-auto img-thumbnail"
-            />
+            <Card>
+              <Card.Img variant="top" src={show.image ? show.image.medium : noImage} alt={show.name} />
+              <Card.Body>
+                <Card.Title>{show.name}</Card.Title>
+                <ListGroup variant="flush">
+                  {show.genres.length > 0 && (
+                    <ListGroupItem>
+                      <strong>Genres: </strong> {show.genres.join(", ")}
+                    </ListGroupItem>
+                  )}
+                  {show.rating && (
+                    <ListGroupItem>
+                      <strong>Rating: </strong>
+                      {show.rating.average ? show.rating.average : "N/A"}
+                    </ListGroupItem>
+                  )}
+                  {show.network && (
+                    <ListGroupItem>
+                      <strong>Network: </strong> {show.network.name}
+                    </ListGroupItem>
+                  )}
+                  {show.runtime && (
+                    <ListGroupItem>
+                      <strong>Runtime: </strong> {show.runtime} minutes
+                    </ListGroupItem>
+                  )}
+
+                  {show.language && (
+                    <ListGroupItem>
+                      <strong>Language: </strong> {show.language}
+                    </ListGroupItem>
+                  )}
+                  {show.officialSite && (
+                    <ListGroupItem>
+                      <Link to={`${show.officialSite}`} target="_blank">
+                        Visit Official Site
+                      </Link>
+                    </ListGroupItem>
+                  )}
+                </ListGroup>
+              </Card.Body>
+            </Card>
           </Col>
           <Col md={8} xs={12} className="px-4">
+
             <p>{stripHTML(show.summary)}</p>
-            {show.genres.length > 0 && (
-              <p>
-                <strong>Genres: </strong> {show.genres.join(", ")}
-              </p>
-            )}
-            {show.rating && (
-              <p>
-                <strong>Rating: </strong>
-                {show.rating.average ? show.rating.average : "N/A"}
-              </p>
-            )}
-            {show.network && (
-              <p>
-                <strong>Network: </strong> {show.network.name}
-              </p>
-            )}
-            {show.runtime && (
-              <p>
-                <strong>Runtime: </strong> {show.runtime} minutes
-              </p>
-            )}
-            {show.language && (
-              <p>
-                <strong>Language: </strong> {show.language}
-              </p>
-            )}
-            {show.officialSite && (
-              <p>
-                <Link to={`${show.officialSite}`} target="_blank">
-                  Visit Official Site
-                </Link>
-              </p>
-            )}
           </Col>
         </Row>
       </>
@@ -108,9 +118,9 @@ const Detail: React.FC = () => {
   return (
     <>
       <div className="my-5">
-        <Link to="/" className="btn btn-secondary">
-          &larr; Back to Home
-        </Link>
+        <Button onClick={goBack} className="btn btn-secondary">
+          &larr; Go back
+        </Button>
       </div>
       {renderDetails()}
     </>
