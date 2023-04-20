@@ -13,14 +13,14 @@ const Search: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
 
-  const search = (search: string) : void => {
+  const search = (search: string): void => {
     console.log("adding to history");
     navigate(`/?search=${search}`);
   }
 
   const handleSearchEvent = (event: React.FormEvent<HTMLFormElement>) => {
     event && event.preventDefault();
-    if(searchParams && searchParams.get("search")) {
+    if (searchParams && searchParams.get("search")) {
       if (searchParams.get("search")! !== searchTerm) {
         search(searchTerm)
       }
@@ -30,7 +30,7 @@ const Search: React.FC = () => {
     }
   }
 
-  const handleSearch = async (search: string) : Promise<void> => {
+  const handleSearch = async (search: string): Promise<void> => {
     setIsLoading(true);
     setIsSearched(true);
     try {
@@ -50,7 +50,7 @@ const Search: React.FC = () => {
     }
   };
 
-  const filterResults = (unfiltered : Show[]) : Show[] => {
+  const filterResults = (unfiltered: Show[]): Show[] => {
     const noImages = unfiltered.filter(show => !show.image);
     const noSummary = unfiltered.filter(show => !show.summary);
     const noGenre = unfiltered.filter(show => show.genres == null || show.genres.length === 0)
@@ -60,9 +60,9 @@ const Search: React.FC = () => {
 
     return filtered;
   }
-  
-  useEffect(() =>{
-    if(searchParams && searchParams.get("search")) {
+
+  useEffect(() => {
+    if (searchParams && searchParams.get("search")) {
       const searchParam = searchParams.get("search")!;
       setSearchTerm(searchParam);
       handleSearch(searchParam);
@@ -72,10 +72,10 @@ const Search: React.FC = () => {
   return (
     <>
       <Row className="mt-4">
-        <Col>
+        <Col xs={12}>
           <Form onSubmit={handleSearchEvent}>
-            <Row className="mx-auto">
-              <Col xs={8} md={11}>
+            <Row>
+              <Col xs={9} md={10} lg={11}>
                 <Form.Group>
                   <Form.Control
                     type="text"
@@ -85,8 +85,8 @@ const Search: React.FC = () => {
                   />
                 </Form.Group>
               </Col>
-              <Col xs={2} md={1}>
-                <Button type="submit" disabled={!searchTerm}>
+              <Col xs={3} sm={2} md={2} lg={1} className="d-flex flex-row-reverse">
+                <Button type="submit" className="mb-auto" disabled={!searchTerm}>
                   Search
                 </Button>
               </Col>
@@ -94,26 +94,29 @@ const Search: React.FC = () => {
           </Form>
         </Col>
       </Row>
-      <Row className="mt-4">
-        <Col>
-          {isLoading && (
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </Spinner>
-          )}
-          {error && (
-            <Alert variant="danger" className="mt-4">
-              {error}
-            </Alert>
-          )}
-          {shows.length === 0 && isSearched && (
-            <Alert variant="info" className="mt-4">
-              No shows found!
-            </Alert>
-          )}
-          {shows.length > 0 && <List shows={shows} />}
-        </Col>
-      </Row>
+      {isLoading || error || shows.length === 0 && (
+        <Row className="mt-4">
+          <Col>
+            {isLoading && (
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            )}
+            {error && (
+              <Alert variant="danger" className="mt-4">
+                {error}
+              </Alert>
+            )}
+            {shows.length === 0 && isSearched && (
+              <Alert variant="info" className="mt-4">
+                No shows found!
+              </Alert>
+            )}
+          </Col>
+        </Row>
+      )}
+
+      {shows.length > 0 && <List shows={shows} />}
     </>
   );
 };
