@@ -11,6 +11,12 @@ interface Network {
   name: string;
 }
 
+interface Externals {
+  imdb: string;
+  thetvdb: number;
+  tvrage: number;
+}
+
 export interface Show {
   id: number;
   name: string;
@@ -22,6 +28,7 @@ export interface Show {
   runtime?: string;
   language?: string;
   officialSite?: string;
+  externals?: Externals;
 }
 
 export interface ListProps {

@@ -60,7 +60,6 @@ const Detail: React.FC = () => {
 
     return (
       <>
-        <h1 className="my-4">{show.name}</h1>
         <Row>
           <Col md={3} xs={12} className="d-flex pb-2">
             <Card>
@@ -99,6 +98,13 @@ const Detail: React.FC = () => {
                     <ListGroupItem>
                       <Link to={`${show.officialSite}`} target="_blank">
                         Visit Official Site
+                      </Link>
+                    </ListGroupItem>
+                  )}
+                  {show.externals?.imdb && (
+                    <ListGroupItem>
+                      <Link to={`https://www.imdb.com/title/${show.externals?.imdb}`} target="_blank">
+                        Visit IMDB
                       </Link>
                     </ListGroupItem>
                   )}
