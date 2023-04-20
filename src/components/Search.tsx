@@ -38,7 +38,8 @@ const Search: React.FC = () => {
         `http://api.tvmaze.com/search/shows?q=${search}`
       );
       const data = await response.json();
-      setShows(data.map((result: any) => result.show));
+      const allShows = data.map((result: any) => result.show);
+      setShows(filterResults(allShows));
       setIsLoading(false);
       setError("");
     } catch (error) {
@@ -48,6 +49,17 @@ const Search: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  const filterResults = (unfiltered : Show[]) : Show[] => {
+    const noImages = unfiltered.filter(show => !show.image);
+    const noSummary = unfiltered.filter(show => !show.summary);
+    const noGenre = unfiltered.filter(show => show.genres == null || show.genres.length === 0)
+    const badShows = [...noImages, ...noSummary, ...noGenre];
+
+    const filtered = unfiltered.filter(show => !badShows.includes(show));
+
+    return filtered;
+  }
   
   useEffect(() =>{
     if(searchParams && searchParams.get("search")) {
