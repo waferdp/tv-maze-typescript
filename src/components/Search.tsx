@@ -5,7 +5,7 @@ import List from "./List";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Search: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [shows, setShows] = useState<Show[]>([]);
@@ -13,22 +13,24 @@ const Search: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
 
-  const search = (search: string) => {
+  const search = (search: string) : void => {
     console.log("adding to history");
     navigate(`/?search=${search}`);
   }
 
   const handleSearchEvent = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    event && event.preventDefault();
     if(searchParams && searchParams.get("search")) {
-      const searchParam = searchParams.get("search")!;
-      if (searchParam !== searchTerm) {
+      if (searchParams.get("search")! !== searchTerm) {
         search(searchTerm)
+      }
+      else {
+        handleSearch(searchTerm);
       }
     }
   }
 
-  const handleSearch = async (search: string) => {
+  const handleSearch = async (search: string) : Promise<void> => {
     setIsLoading(true);
     setIsSearched(true);
     try {
