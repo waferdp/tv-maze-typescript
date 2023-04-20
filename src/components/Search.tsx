@@ -1,22 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col, Form, Button, Spinner, Alert } from "react-bootstrap";
 import { Show } from "../types";
 import List from "./List";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Search: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [shows, setShows] = useState<Show[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
 
-  const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
+  const search = (search: string) => {
+    console.log("adding to history");
+    navigate(`/?search=${search}`);
+  }
+
+  const handleSearchEvent = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if(searchParams && searchParams.get("search")) {
+      const searchParam = searchParams.get("search")!;
+      if (searchParam !== searchTerm) {
+        search(searchTerm)
+      }
+    }
+  }
+
+  const handleSearch = async (search: string) => {
     setIsLoading(true);
     setIsSearched(true);
     try {
       const response = await fetch(
-        `http://api.tvmaze.com/search/shows?q=${searchTerm}`
+        `http://api.tvmaze.com/search/shows?q=${search}`
       );
       const data = await response.json();
       setShows(data.map((result: any) => result.show));
@@ -29,11 +46,20 @@ const Search: React.FC = () => {
       setIsLoading(false);
     }
   };
+  
+  useEffect(() =>{
+    if(searchParams && searchParams.get("search")) {
+      const searchParam = searchParams.get("search")!;
+      setSearchTerm(searchParam);
+      handleSearch(searchParam);
+    }
+  }, [searchParams]);
+
   return (
     <>
       <Row className="mt-4">
         <Col>
-          <Form onSubmit={handleSearch}>
+          <Form onSubmit={handleSearchEvent}>
             <Row className="mx-auto">
               <Col xs={8} md={11}>
                 <Form.Group>
