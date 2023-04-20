@@ -94,7 +94,7 @@ const Search: React.FC = () => {
           </Form>
         </Col>
       </Row>
-      {isLoading || error || shows.length === 0 && (
+      { (isLoading || error || shows.length === 0) && (
         <Row className="mt-4">
           <Col>
             {isLoading && (
