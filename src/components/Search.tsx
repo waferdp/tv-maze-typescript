@@ -67,7 +67,8 @@ const Search: React.FC = () => {
       setSearchTerm(searchParam);
       handleSearch(searchParam);
     }
-  }, [searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]); 
 
   return (
     <>
