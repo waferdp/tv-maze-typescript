@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Card } from "react-bootstrap";
+import { Row, Col, Card, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { ListProps } from "../types";
 import { stripHTML, truncateString } from "../utils/helpers";
@@ -17,7 +17,7 @@ const List: React.FC<ListProps> = ({ shows }) => {
               src={show.image ? show.image.medium : noImage}
               alt={show.name}
             />
-            <Card.Body>
+            <Card.Body className="d-flex flex-column">
               <Card.Title>{show.name}</Card.Title>
               <Card.Subtitle className="mb-2 text-muted">
                 {show.genres.join(", ")}
@@ -25,9 +25,11 @@ const List: React.FC<ListProps> = ({ shows }) => {
               <Card.Text className="d-none d-sm-block">
                 {truncateString(stripHTML(show.summary), 180)}
               </Card.Text>
-              <Link to={`/detail/${show.id}`} className="btn btn-primary">
-                Details
-              </Link>
+              <Container fluid className="d-flex flex-row-reverse mt-auto pe-0">
+                <Link to={`/detail/${show.id}`} className="btn btn-primary">
+                    Details
+                  </Link>
+              </Container>
             </Card.Body>
           </Card>
         </Col>
