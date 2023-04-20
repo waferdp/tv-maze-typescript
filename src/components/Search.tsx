@@ -16,8 +16,8 @@ const Search: React.FC = () => {
 
   const handleSearchEvent = (event: React.FormEvent<HTMLFormElement>) => {
     event && event.preventDefault();
-    if (searchParams.get("search")! !== searchTerm) {
-      navigate(`/?search=${searchTerm}`);
+    if (searchParams.get("q")! !== searchTerm) {
+      navigate(`/?q=${searchTerm}`);
     }
   }
 
@@ -51,8 +51,8 @@ const Search: React.FC = () => {
       }
     };
 
-    if (searchParams && searchParams.get("search")) {
-      const searchParam = searchParams.get("search")!;
+    if (searchParams && searchParams.get("q")) {
+      const searchParam = searchParams.get("q")!;
       console.log(`search param: ${searchParam}`);
       setSearchTerm(searchParam);
       handleSearch(searchParam);
