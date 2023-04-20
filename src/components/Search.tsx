@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
 import { Row, Col, Form, Button, Spinner, Alert } from "react-bootstrap";
 import { Show } from "../types";
 import List from "./List";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { SearchCallbacks, handleSearch } from "../utils/searcher";
-
-
 
 const Search: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -16,45 +14,50 @@ const Search: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
 
-  const search = (search: string): void => {
-    console.log("adding to history");
-    navigate(`/?search=${search}`);
-  }
-
-  const callbacks : SearchCallbacks = {
-    setShows: setShows,
-    setError: setError,
-    setIsLoading: setIsLoading,
-    setIsSearched: setIsSearched
-  };
-
   const handleSearchEvent = (event: React.FormEvent<HTMLFormElement>) => {
     event && event.preventDefault();
     if (searchParams.get("search")! !== searchTerm) {
-      console.log("navigating")
-      search(searchTerm)
-    }
-    else {
-      console.log("staying")
-      handleSearch(searchTerm, callbacks);
+      navigate(`/?search=${searchTerm}`);
     }
   }
-  
+
   useEffect(() => {
-    const callbacks = {
-      setShows: setShows,
-      setError: setError,
-      setIsLoading: setIsLoading,
-      setIsSearched: setIsSearched
+
+    const filterResults = (unfiltered: Show[]): Show[] => {
+      const noImages = unfiltered.filter(show => !show.image);
+      const noSummary = unfiltered.filter(show => !show.summary);
+      const noGenre = unfiltered.filter(show => show.genres == null || show.genres.length === 0)
+      const badShows = [...noImages, ...noSummary, ...noGenre];
+
+      const filtered = unfiltered.filter(show => !badShows.includes(show));
+
+      return filtered;
+    }
+
+    const handleSearch = async (search: string): Promise<void> => {
+      setIsLoading!(true);
+      setIsSearched!(true);
+      try {
+        const response = await axios.get(`http://api.tvmaze.com/search/shows?q=${search}`);
+        const allShows = response.data.map((result: any) => result.show);
+        setShows!(filterResults(allShows));
+        setIsLoading!(false);
+        setError!("");
+      } catch (error) {
+        setError!(
+          "An error occurred while fetching search results. Please try again later."
+        );
+        setIsLoading!(false);
+      }
     };
 
     if (searchParams && searchParams.get("search")) {
       const searchParam = searchParams.get("search")!;
       console.log(`search param: ${searchParam}`);
       setSearchTerm(searchParam);
-      handleSearch(searchParam, callbacks);
+      handleSearch(searchParam);
     }
-  }, [searchParams]); 
+  }, [searchParams]);
 
   return (
     <>
@@ -73,7 +76,7 @@ const Search: React.FC = () => {
                 </Form.Group>
               </Col>
               <Col xs={3} sm={2} md={2} lg={1} className="d-flex flex-row-reverse">
-                <Button type="submit" className="mb-auto" disabled={!searchTerm}>
+                <Button id="search-button" type="submit" className="mb-auto" disabled={!searchTerm}>
                   Search
                 </Button>
               </Col>
@@ -81,7 +84,7 @@ const Search: React.FC = () => {
           </Form>
         </Col>
       </Row>
-      { (isLoading || error || shows.length === 0) && (
+      {(isLoading || error || shows.length === 0) && (
         <Row className="mt-4">
           <Col>
             {isLoading && (
@@ -102,7 +105,6 @@ const Search: React.FC = () => {
           </Col>
         </Row>
       )}
-
       {shows.length > 0 && <List shows={shows} />}
     </>
   );

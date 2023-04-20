@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Row, Col, Spinner, Alert, Card, ListGroup, ListGroupItem, Button } from "react-bootstrap";
 import { useParams, Link, useNavigate } from "react-router-dom";
@@ -14,9 +15,10 @@ const Detail: React.FC = () => {
   useEffect(() => {
     const fetchShow = async () => {
       try {
-        const response = await fetch(`http://api.tvmaze.com/shows/${id}`);
-        const data = await response.json();
-        setShow(data);
+        console.log(`Getting details for ${id} : http://api.tvmaze.com/shows/${id}`)
+        const response = await axios.get(`http://api.tvmaze.com/shows/${id}`);
+        setShow(response.data);
+        console.log(response.data);
         setIsLoading(false);
       } catch (error: any) {
         setError(
