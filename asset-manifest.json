@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.c2cab247.css",
-    "main.js": "/static/js/main.e0db046f.js",
-    "static/media/no-image.jpeg": "/static/media/no-image.da4ed96642a863897988.jpeg",
-    "index.html": "/index.html",
-    "main.c2cab247.css.map": "/static/css/main.c2cab247.css.map",
-    "main.e0db046f.js.map": "/static/js/main.e0db046f.js.map"
+    "main.css": "/tv-maze-typescript/static/css/main.c2cab247.css",
+    "main.js": "/tv-maze-typescript/static/js/main.9f0aec4a.js",
+    "static/media/no-image.jpeg": "/tv-maze-typescript/static/media/no-image.da4ed96642a863897988.jpeg",
+    "index.html": "/tv-maze-typescript/index.html",
+    "main.c2cab247.css.map": "/tv-maze-typescript/static/css/main.c2cab247.css.map",
+    "main.9f0aec4a.js.map": "/tv-maze-typescript/static/js/main.9f0aec4a.js.map"
   },
   "entrypoints": [
     "static/css/main.c2cab247.css",
-    "static/js/main.e0db046f.js"
+    "static/js/main.9f0aec4a.js"
   ]
 }
