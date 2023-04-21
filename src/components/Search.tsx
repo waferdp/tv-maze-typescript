@@ -38,7 +38,7 @@ const Search: React.FC = () => {
       setIsLoading!(true);
       setIsSearched!(true);
       try {
-        const response = await axios.get(`http://api.tvmaze.com/search/shows?q=${search}`);
+        const response = await axios.get(`https://api.tvmaze.com/search/shows?q=${search}`);
         const allShows = response.data.map((result: any) => result.show);
         setShows!(filterResults(allShows));
         setIsLoading!(false);
