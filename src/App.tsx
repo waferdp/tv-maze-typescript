@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import { Container, Navbar } from "react-bootstrap";
 import Search from "./components/Search";
 import Detail from "./components/Detail";
@@ -7,7 +7,7 @@ import NotFound from "./components/NotFound";
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Navbar bg="light" expand="lg">
         <Navbar.Brand href="/" className="m-2">
           TV Series Search
@@ -20,7 +20,7 @@ const App: React.FC = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Container>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
