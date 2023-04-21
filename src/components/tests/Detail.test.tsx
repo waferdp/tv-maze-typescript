@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import Detail from '../Detail';
 import mockDetails from '../../mocks/mockDetails';
+import React from 'react';
 
 jest.mock('axios');
 

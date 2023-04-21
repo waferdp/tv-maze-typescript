@@ -53,7 +53,6 @@ const Search: React.FC = () => {
 
     if (searchParams && searchParams.get("q")) {
       const searchParam = searchParams.get("q")!;
-      console.log(`search param: ${searchParam}`);
       setSearchTerm(searchParam);
       handleSearch(searchParam);
     }
