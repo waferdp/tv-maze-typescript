@@ -15,10 +15,8 @@ const Detail: React.FC = () => {
   useEffect(() => {
     const fetchShow = async () => {
       try {
-        console.log(`Getting details for ${id} : http://api.tvmaze.com/shows/${id}`)
-        const response = await axios.get(`http://api.tvmaze.com/shows/${id}`);
+        const response = await axios.get(`https://api.tvmaze.com/shows/${id}`);
         setShow(response.data);
-        console.log(response.data);
         setIsLoading(false);
       } catch (error: any) {
         setError(
