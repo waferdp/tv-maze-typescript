@@ -11,6 +11,8 @@ const Search: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [shows, setShows] = useState<Show[]>([]);
   const [error, setError] = useState("");
+  const [allShows, setAllShows] = useState<Show[]>([]);
+  const [filtered, setFiltered] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
 
@@ -19,17 +21,26 @@ const Search: React.FC = () => {
     if (searchParams.get("q")! !== searchTerm) {
       navigate(`/?q=${searchTerm}`);
     }
-  }
+  };
+
+  const showFiltered = () : void => {
+    setFiltered(0);
+    setShows(allShows);
+  };
+
 
   useEffect(() => {
 
     const filterResults = (unfiltered: Show[]): Show[] => {
+     
       const noImages = unfiltered.filter(show => !show.image);
       const noSummary = unfiltered.filter(show => !show.summary);
-      const noGenre = unfiltered.filter(show => show.genres == null || show.genres.length === 0)
+      const noGenre = unfiltered.filter(show => show.genres == null || show.genres.length === 0);
       const badShows = [...noImages, ...noSummary, ...noGenre];
 
       const filtered = unfiltered.filter(show => !badShows.includes(show));
+      console.log(`${unfiltered.length} - ${filtered.length}`)
+      setFiltered(unfiltered.length - filtered.length);
 
       return filtered;
     }
@@ -39,8 +50,9 @@ const Search: React.FC = () => {
       setIsSearched!(true);
       try {
         const response = await axios.get(`https://api.tvmaze.com/search/shows?q=${search}`);
-        const allShows = response.data.map((result: any) => result.show);
-        setShows!(filterResults(allShows));
+        const shows = response.data.map((result: any) => result.show)
+        setAllShows!(shows);
+        setShows!(filterResults(shows));
         setIsLoading!(false);
         setError!("");
       } catch (error) {
@@ -83,7 +95,7 @@ const Search: React.FC = () => {
           </Form>
         </Col>
       </Row>
-      {(isLoading || error || shows.length === 0) && (
+      {(isLoading || error || shows.length === 0 || filtered > 0) && (
         <Row className="mt-4">
           <Col>
             {isLoading && (
@@ -99,6 +111,11 @@ const Search: React.FC = () => {
             {shows.length === 0 && isSearched && (
               <Alert variant="info" className="mt-4">
                 No shows found!
+              </Alert>
+            )}
+            {filtered > 0 && (
+              <Alert role="button" onClick={(e) => showFiltered()} variant="info" className="mt-4">
+                {filtered} shows were filtered due to, click here to Show
               </Alert>
             )}
           </Col>

@@ -1,6 +1,5 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from '../../App';
-import React from 'react';
 import { mockSearchWithResult } from '../../mocks/mockSearch';
 
 jest.mock('axios');
@@ -19,13 +18,14 @@ test('shows search bar', async () => {
 
 test('search for doctor, shows Doctor Who', async () => {
   render(<App />);
-  
+
   mockSearchWithResult();
   const searchBar = screen.getByPlaceholderText(/Search for a TV series/i);
   fireEvent.change(searchBar, { target: { value: "doctor" } });
   const submitButton = screen.getByRole('button')
   fireEvent.submit(submitButton, { target: { value: submitButton } });
-  const doctorWho = await waitFor(() => screen.getByText(/Doctor Who/i));
+
+  const doctorWho = await waitFor(() => screen.findByText(/Doctor Who/i));
   expect(doctorWho).toBeInTheDocument();
 });
 
