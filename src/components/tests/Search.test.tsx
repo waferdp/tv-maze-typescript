@@ -1,8 +1,7 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import mockSearch from "../../mocks/mockSearch";
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { mockSearchWithResult, mockSearchNoResult, mockSearchNoGenres } from "../../mocks/mockSearch";
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import Search from '../Search';
-import React from 'react';
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => {
@@ -14,7 +13,9 @@ jest.mock('react-router-dom', () => {
     };
 });
 
-test('search for doctor, shows Doctor Who', async () => {
+test('search by entering address, shows Doctor Who', async () => {
+    mockSearchWithResult();
+
     render(<MemoryRouter initialEntries={['/']}>
         <Routes>
             <Route path="/" Component={Search}>
@@ -22,17 +23,28 @@ test('search for doctor, shows Doctor Who', async () => {
         </Routes>
     </MemoryRouter>)
 
-    mockSearch();
-    const searchBar = screen.getByPlaceholderText(/Search for a TV series/i);
-    fireEvent.change(searchBar, { target: { value: "doctor" } });
-    const submitButton = screen.getByRole('button')
-    fireEvent.submit(submitButton, { target: { value: submitButton } });
     const doctorWho = await waitFor(() => screen.getByText(/Doctor Who/i));
     expect(doctorWho).toBeInTheDocument();
 });
 
-test('search by entering address, shows Doctor Who', async () => {
-    mockSearch();
+test('Search returning show with no genres, doesn\'t dispaly that show', async () => {
+    mockSearchNoGenres();
+
+    render(<MemoryRouter initialEntries={['/']}>
+        <Routes>
+            <Route path="/" Component={Search}>
+            </Route>
+        </Routes>
+    </MemoryRouter>)
+    
+    const saknad = await waitFor(() => screen.getByText(/Saknad/i))
+    const missingMilions = screen.queryByText(/Missing Millions/i);
+    expect(saknad).toBeInTheDocument();
+    expect(missingMilions).not.toBeInTheDocument();
+})
+
+test('Search returning no results, dispalys no shows found', async () => {
+    mockSearchNoResult();
     render(<MemoryRouter initialEntries={['/']}>
         <Routes>
             <Route path="/" Component={Search}>
@@ -40,6 +52,6 @@ test('search by entering address, shows Doctor Who', async () => {
         </Routes>
     </MemoryRouter>)
 
-    const doctorWho = await waitFor(() => screen.getByText(/Doctor Who/i));
+    const doctorWho = await waitFor(() => screen.getByText(/No shows found/i));
     expect(doctorWho).toBeInTheDocument();
 });
